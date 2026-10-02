@@ -295,6 +295,58 @@
             var top = ListOfStudents.GetTopStudent(students);
             Assert.AreEqual("Єдиний", top.FullName);
         }
+        [TestMethod]
+        
+        public void Aspirant_Constructor_InitializesCorrectly()
+        {
+            var aspirant = new Aspirant("Сидоренко", "ФІТ", 2, "AI Models", 4, "Проф. Бондар");
+            Assert.AreEqual("Сидоренко", aspirant.FullName);
+            Assert.AreEqual("AI Models", aspirant.ThesisTopic);
+            Assert.AreEqual(4, aspirant.PublicationsCount);
+            Assert.AreEqual("Проф. Бондар", aspirant.ScientificAdvisor);
+        }
 
+        [TestMethod]
+        public void Aspirant_InvalidCourse_ThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() =>
+                new Aspirant("Сидоренко", "ФІТ", 5, "Тема", 1, "Керівник"));
+        }
+
+        [TestMethod]
+        public void Bachelor_CalculateScholarship_HighGrade_ReturnsIncreasedScholarship()
+        {
+            var b = new Bachelor("Тест", "ФІТ", 2, 30);
+            b.AddGrade(95);
+            b.AddGrade(95);
+            double scholarship = b.CalculateScholarship(2000.0);
+            Assert.AreEqual(2800.0, scholarship, 0.01);
+        }
+
+        [TestMethod]
+        public void Master_CalculateScholarship_WithPublications()
+        {
+            var m = new Master("Тест", "ФІТ", 5, "Тема", 2);
+            m.AddGrade(92);
+            double scholarship = m.CalculateScholarship(2000.0);
+            Assert.AreEqual(2300.0, scholarship, 0.01);
+        }
+
+        [TestMethod]
+        public void ListOfStudents_GetTotalScholarshipBudget_DemonstratesInterfacePolymorphism()
+        {
+            var list = new List<IScholarshipCalculable>();
+
+            var b = new Bachelor("Бакалавр", "ФІТ", 2, 30);
+            b.AddGrade(80);
+            list.Add(b);
+
+            var m = new Master("Магістр", "ФІТ", 5, "Тема", 0);
+            m.AddGrade(95);
+            list.Add(m);
+
+            double total = ListOfStudents.GetTotalScholarshipBudget(list, 2000.0);
+            Assert.AreEqual(4800.0, total, 0.01);
+        }
     }
 }

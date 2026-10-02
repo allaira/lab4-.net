@@ -12,10 +12,11 @@ namespace lab_3_students
 
         public MainWindow()
         {
-            InitializeComponent();
-            SetInitialUiState();
+            InitializeComponent(); //малює вікно і створює всі елементи з XAML
+            SetInitialUiState();   //налаштування видимості полів форми
         }
 
+        //спрацьовує, коли користувач клацає на випадний список і обирає інший тип студента
         private void StudentTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetInitialUiState();
@@ -23,17 +24,20 @@ namespace lab_3_students
 
         private void SetInitialUiState()
         {
-            if (CreditsLabel == null) return;
+            if (CreditsLabel == null) return;//якщо зміна вибору спрацює до ств полів бакалавра в пам'яті-виходимо
 
-            bool isBachelor = StudentTypeComboBox.SelectedIndex == 0;
+            int type = StudentTypeComboBox.SelectedIndex;
 
-            CreditsLabel.Visibility = isBachelor ? Visibility.Visible : Visibility.Collapsed;
-            CreditsTextBox.Visibility = isBachelor ? Visibility.Visible : Visibility.Collapsed;
+            CreditsLabel.Visibility = (type == 0) ? Visibility.Visible : Visibility.Collapsed;
+            CreditsTextBox.Visibility = (type == 0) ? Visibility.Visible : Visibility.Collapsed;
+            
+            ThesisLabel.Visibility = (type == 1 || type == 2) ? Visibility.Visible : Visibility.Collapsed;
+            ThesisTextBox.Visibility = (type == 1 || type == 2) ? Visibility.Visible : Visibility.Collapsed;
+            PublicationsLabel.Visibility = (type == 1 || type == 2) ? Visibility.Visible : Visibility.Collapsed;
+            PublicationsTextBox.Visibility = (type == 1 || type == 2) ? Visibility.Visible : Visibility.Collapsed;
 
-            ThesisLabel.Visibility = isBachelor ? Visibility.Collapsed : Visibility.Visible;
-            ThesisTextBox.Visibility = isBachelor ? Visibility.Collapsed : Visibility.Visible;
-            PublicationsLabel.Visibility = isBachelor ? Visibility.Collapsed : Visibility.Visible;
-            PublicationsTextBox.Visibility = isBachelor ? Visibility.Collapsed : Visibility.Visible;
+            AdvisorLabel.Visibility = (type == 2) ? Visibility.Visible : Visibility.Collapsed;
+            AdvisorTextBox.Visibility = (type == 2) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void AddStudentButton_Click(object sender, RoutedEventArgs e)
@@ -59,7 +63,7 @@ namespace lab_3_students
                     }
                     student = new Bachelor(fullName, faculty, course, credits);
                 }
-                else
+                else if(StudentTypeComboBox.SelectedIndex == 1)
                 {
                     string topic = ThesisTextBox.Text;
                     if (!int.TryParse(PublicationsTextBox.Text, out int pubs))
@@ -68,6 +72,17 @@ namespace lab_3_students
                         return;
                     }
                     student = new Master(fullName, faculty, course, topic, pubs);
+                }
+                else
+                {
+                    string topic = ThesisTextBox.Text;
+                    string advisor = AdvisorTextBox.Text;
+                    if (!int.TryParse(PublicationsTextBox.Text, out int pubs))
+                    {
+                        MessageBox.Show("Введіть коректну кількість публікацій.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+                    student = new Aspirant(fullName, faculty, course, topic, pubs, advisor);
                 }
 
                 if (!string.IsNullOrWhiteSpace(GradesTextBox.Text))
@@ -97,7 +112,7 @@ namespace lab_3_students
                 PublicationsTextBox.Clear();
                 GradesTextBox.Clear();
             }
-            catch (Exception ex)
+            catch (Exception ex) //виводимо текст помилки, яку викинули класи
             {
                 MessageBox.Show(ex.Message, "Помилка валідації", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -110,6 +125,10 @@ namespace lab_3_students
                 TopStudentTextBlock.Text = $"{top.FullName} ({top.Faculty}, Курс {top.Course}) — Сер. бал: {top.CalculateAverageGrade():F2}";
             else
                 TopStudentTextBlock.Text = "—";
+
+            var scholarshipEligible = _students.OfType<IScholarshipCalculable>();
+            double budget = ListOfStudents.GetTotalScholarshipBudget(scholarshipEligible, 2000.0);
+            ScholarshipBudgetTextBlock.Text = $"{budget:F2} грн";
         }
     }
 }

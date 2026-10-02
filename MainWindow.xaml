@@ -51,12 +51,14 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Label Content="Тип студента:" Grid.Row="0" Grid.Column="0"/>
                     <ComboBox x:Name="StudentTypeComboBox" Grid.Row="0" Grid.Column="1" SelectionChanged="StudentTypeComboBox_SelectionChanged">
                         <ComboBoxItem Content="Бакалавр" IsSelected="True"/>
                         <ComboBoxItem Content="Магістр"/>
+                        <ComboBoxItem Content="Аспірант"/>
                     </ComboBox>
 
                     <Label Content="ПІБ студента:" Grid.Row="1" Grid.Column="0"/>
@@ -78,9 +80,13 @@
 
                     <Label x:Name="PublicationsLabel" Content="Кількість публікацій:" Grid.Row="5" Grid.Column="0" Visibility="Collapsed"/>
                     <TextBox x:Name="PublicationsTextBox" Grid.Row="5" Grid.Column="1" Visibility="Collapsed"/>
-
-                    <Label Content="Оцінки (через кому):" Grid.Row="6" Grid.Column="0"/>
-                    <TextBox x:Name="GradesTextBox" Grid.Row="6" Grid.Column="1"/>
+                   
+                    <!-- Поле Аспіранта -->
+                    <Label x:Name="AdvisorLabel" Content="Науковий керівник:" Grid.Row="6" Grid.Column="0" Visibility="Collapsed"/>
+                    <TextBox x:Name="AdvisorTextBox" Grid.Row="6" Grid.Column="1" Visibility="Collapsed"/>
+                    
+                    <Label Content="Оцінки (через кому):" Grid.Row="7" Grid.Column="0"/>
+                    <TextBox x:Name="GradesTextBox" Grid.Row="7" Grid.Column="1"/>
                 </Grid>
 
                 <Button x:Name="AddStudentButton" Content="Додати студента" Click="AddStudentButton_Click" HorizontalAlignment="Left"/>
@@ -95,6 +101,8 @@
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="Студент із найвищим середнім балом: " FontWeight="Bold"/>
                 <TextBlock x:Name="TopStudentTextBlock" Text="—" Foreground="#1B5E20" FontWeight="Bold"/>
+                <TextBlock Text=" | Стипендіальний фонд: " FontWeight="Bold" Margin="10,0,0,0"/>
+                <TextBlock x:Name="ScholarshipBudgetTextBlock" Text="0.00 грн" Foreground="#1B5E20" FontWeight="Bold"/>
             </StackPanel>
         </GroupBox>
     </Grid>

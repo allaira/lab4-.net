@@ -1,4 +1,5 @@
-﻿using System;
+﻿using lab3_Students.Tests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace lab_3_students
 {
-    public class Bachelor : Student
+    public class Bachelor : Student, IScholarshipCalculable, IRateable
     {
         private int creditsPerSemester;
 
@@ -36,6 +37,15 @@ namespace lab_3_students
         public double GetAcademicRating()
         {
             return CalculateAverageGrade() + creditsPerSemester * 0.1;
+        }
+
+        public double CalculateScholarship(double baseAmount)
+        {
+            if (baseAmount < 0) throw new ArgumentException("Стипендія не може бути від'ємною");
+            double avg = CalculateAverageGrade();
+            if (avg <= 93) { return baseAmount; }
+            else if (avg > 93) { return baseAmount * 1.4; }
+            return 0.0;
         }
 
         public override string GetInfo()

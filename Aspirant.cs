@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace lab_3_students
 {
-    public class Master : Student, IScholarshipCalculable, IRateable, IResearchable
+    public class Aspirant : Student, IRateable, IResearchable
     {
         private string thesisTopic;
         private int publicationsCount;
+        private string scientificAdvisor;
 
         public string ThesisTopic
         {
@@ -34,38 +35,40 @@ namespace lab_3_students
             }
         }
 
-        public Master(string fullName, string faculty, int course, string thesisTopic, int publicationsCount)
+        public string ScientificAdvisor
+        {
+            get { return scientificAdvisor; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("ПІБ керівника не може бути порожнім", nameof(value));
+                }
+                scientificAdvisor = value;
+            }
+        }
+        public Aspirant(string fullName, string faculty, int course, string thesisTopic, int publicationsCount, string scientificAdvisor)
             : base(fullName, faculty, course)
         {
             ThesisTopic = thesisTopic;
             PublicationsCount = publicationsCount;
+            ScientificAdvisor = scientificAdvisor;
         }
 
-        protected override void ValidateCourse(int value)
+        protected override void ValidateCourse(int course)
         {
-            if (value < 5 || value > 6)
-                throw new ArgumentException("Курс магістра повинен бути 5 або 6.", nameof(value));
+            if (course < 1 || course > 4)
+                throw new System.ArgumentException("Курс аспіранта має бути від 1 до 4.");
         }
 
         public double GetAcademicRating()
         {
-            return CalculateAverageGrade() + publicationsCount * 2;
-        }
-
-        public double CalculateScholarship(double baseAmount)
-        {
-            if (baseAmount < 0) throw new ArgumentException("Стипендія не може бути від'ємною");
-            double avg = CalculateAverageGrade();
-            if (avg <= 93) { return baseAmount + (publicationsCount * 150); ; }
-            else if (avg > 93) { return baseAmount * 1.4 + (publicationsCount * 150); }
-            return 0.0;
+            return CalculateAverageGrade() + (PublicationsCount * 3.5);
         }
 
         public override string GetInfo()
         {
-            return base.GetInfo() + $", Тема роботи: {ThesisTopic}, " +
-                   $"Публікацій: {PublicationsCount}, " +
-                   $"Академічний рейтинг: {GetAcademicRating():F2}";
+            return $"{base.GetInfo()}, Тема: {ThesisTopic}, Наук. керівник: {ScientificAdvisor}, Публікацій: {PublicationsCount}, Рейтинг: {GetAcademicRating():F2}";
         }
     }
 }

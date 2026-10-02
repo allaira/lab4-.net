@@ -27,5 +27,16 @@ namespace lab_3_students
             }
             return topStudent;
         }
+        
+        public static double GetTotalScholarshipBudget(IEnumerable<IScholarshipCalculable> scholarshipStudents, double baseScholarship)
+        {
+            if (scholarshipStudents == null) return 0.0;
+            double total = 0.0;
+            foreach(var student in scholarshipStudents)
+            {
+                total += student.CalculateScholarship(baseScholarship);
+            }
+            return total;
+        }
     }
 }
